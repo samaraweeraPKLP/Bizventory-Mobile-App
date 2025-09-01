@@ -350,8 +350,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderColor: '#ffffffff',
     borderWidth: 2,
-    marginBottom: 30,
-    marginTop: 10,
+    marginBottom: 25,
   },
   primaryButtonText: {
     fontSize: 25,
@@ -369,7 +368,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderColor: '#1B4F56',
     borderWidth: 2,
-    marginBottom: 30,
+    marginBottom: 25,
   },
   secondaryButtonText: {
     fontSize: 25,
@@ -434,8 +433,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B4F56',
     // marginHorizontal: 16,
     // borderRadius: 12,
-    minHeight: 65,
-    marginTop: 25,
+    minHeight: 60,
+    // marginBottom: 20,
   },
 });
 
