@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,12 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const CreateInvoiceScreen = () => {
+const CreateInvoiceScreen = ({ navigation }) => {
   const [invoiceData, setInvoiceData] = useState({
     date: '',
     invoiceNo: '',
@@ -22,12 +24,25 @@ const CreateInvoiceScreen = () => {
       unitPrice: '',
       quantity: ''
     }],
-    totalAmount: '',
-    discount: '',
-    netAmount: '',
-    payment: '',
-    balance: ''
+    totalAmount: '0',
+    discount: '0',
+    netAmount: '0',
+    payment: '0',
+    balance: '0'
   });
+
+  // Auto-generate date & invoice number
+  useEffect(() => {
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+    const randomInvoiceNo = "INV-" + Math.floor(Math.random() * 100000);
+
+    setInvoiceData(prev => ({
+      ...prev,
+      date: formattedDate,
+      invoiceNo: randomInvoiceNo
+    }));
+  }, []);
 
   const addItem = () => {
     setInvoiceData(prev => ({
@@ -51,26 +66,78 @@ const CreateInvoiceScreen = () => {
   };
 
   const updateField = (field, value) => {
-    setInvoiceData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    let updatedInvoice = { ...invoiceData, [field]: value };
+
+    // Auto calculate net amount when discount changes
+    if (field === "discount") {
+      const net = parseFloat(updatedInvoice.totalAmount || 0) - parseFloat(value || 0);
+      updatedInvoice.netAmount = net.toFixed(2);
+    }
+
+    // Auto calculate balance when payment changes
+    if (field === "payment") {
+      const balance = parseFloat(updatedInvoice.netAmount || 0) - parseFloat(value || 0);
+      updatedInvoice.balance = balance.toFixed(2);
+    }
+
+    setInvoiceData(updatedInvoice);
   };
 
   const handleViewBill = (index) => {
-    // Handle view bill functionality
     console.log('View bill for item:', index);
   };
 
-  const handleAddBill = (index) => {
-    // Handle add bill functionality
-    console.log('Add bill for item:', index);
+  const handleAddBill = () => {
+    // Calculate total from items
+    let total = invoiceData.items.reduce((sum, item) => {
+      const price = parseFloat(item.unitPrice) || 0;
+      const qty = parseFloat(item.quantity) || 0;
+      return sum + (price * qty);
+    }, 0);
+
+    const discount = parseFloat(invoiceData.discount) || 0;
+    const net = total - discount;
+    const payment = parseFloat(invoiceData.payment) || 0;
+    const balance = net - payment;
+
+    setInvoiceData(prev => ({
+      ...prev,
+      totalAmount: total.toFixed(2),
+      netAmount: net.toFixed(2),
+      balance: balance.toFixed(2)
+    }));
+
+    Alert.alert("Bill Updated", "Totals have been calculated.");
   };
 
   const handleAddCustomer = () => {
-    // Handle add customer functionality
     console.log('Add customer details');
   };
+
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
+
+  const handleSaveInvoice = async () => {
+  try {
+    const response = await fetch("http://10.251.35.12:5260/api/Invoice/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(invoiceData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      Alert.alert("Success", `Invoice saved! ID: ${data.invoiceId}`);
+    } else {
+      const errorData = await response.json();
+      Alert.alert("Error", errorData.message || "Failed to save invoice");
+    }
+  } catch (error) {
+    Alert.alert("Error", "Could not connect to server");
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,10 +145,8 @@ const CreateInvoiceScreen = () => {
       
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Create Invoice</Text>
         <View style={styles.headerRight}>
@@ -104,7 +169,7 @@ const CreateInvoiceScreen = () => {
               placeholder="Date"
               placeholderTextColor="#999"
               value={invoiceData.date}
-              onChangeText={(value) => updateField('date', value)}
+              editable={false} // auto-generated
             />
           </View>
           <View style={styles.halfWidth}>
@@ -114,7 +179,7 @@ const CreateInvoiceScreen = () => {
               placeholder="Invoice No"
               placeholderTextColor="#999"
               value={invoiceData.invoiceNo}
-              onChangeText={(value) => updateField('invoiceNo', value)}
+              editable={false} // auto-generated
             />
           </View>
         </View>
@@ -191,7 +256,7 @@ const CreateInvoiceScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.addBillButton}
-                onPress={() => handleAddBill(index)}
+                onPress={handleAddBill}
               >
                 <Text style={styles.addBillText}>Add Bill</Text>
               </TouchableOpacity>
@@ -199,21 +264,14 @@ const CreateInvoiceScreen = () => {
           </View>
         ))}
 
-        {/* Add More Items Button */}
-          <Text style={styles.sectionTitle}>Add Item Details</Text>
-
-
         {/* Summary Section */}
         <View style={styles.summarySection}>
           <View style={styles.inputRow}>
             <Text style={styles.rowLabel}>Total Amount</Text>
             <TextInput
               style={styles.rowInput}
-              placeholder="Total amount"
-              placeholderTextColor="#999"
               value={invoiceData.totalAmount}
-              keyboardType="numeric"
-              onChangeText={(value) => updateField('totalAmount', value)}
+              editable={false}
             />
           </View>
 
@@ -233,11 +291,8 @@ const CreateInvoiceScreen = () => {
             <Text style={styles.rowLabel}>Net Amount</Text>
             <TextInput
               style={styles.rowInput}
-              placeholder="Net Amount"
-              placeholderTextColor="#999"
               value={invoiceData.netAmount}
-              keyboardType="numeric"
-              onChangeText={(value) => updateField('netAmount', value)}
+              editable={false}
             />
           </View>
 
@@ -257,11 +312,8 @@ const CreateInvoiceScreen = () => {
             <Text style={styles.rowLabel}>Balance</Text>
             <TextInput
               style={styles.rowInput}
-              placeholder="Balance"
-              placeholderTextColor="#999"
               value={invoiceData.balance}
-              keyboardType="numeric"
-              onChangeText={(value) => updateField('balance', value)}
+              editable={false}
             />
           </View>
         </View>
@@ -281,24 +333,19 @@ const CreateInvoiceScreen = () => {
             <TouchableOpacity style={styles.cancelButton}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.borrowerButton}>
+            <TouchableOpacity style={styles.borrowerButton} onPress={handleSaveInvoice}>
               <Text style={styles.borrowerButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Footer Caption */}
-
       </ScrollView>
       
-        <View style={styles.bottomCard}>
-                  {/* Additional content can be added here */}
-        </View>
+      <View style={styles.bottomCard}></View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
@@ -310,7 +357,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginTop:55,
+    
 
   },
   menuIcon: {

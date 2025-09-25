@@ -62,19 +62,18 @@ const DashboardScreen = ({ navigation }) => {
   }, []);
 
   const handleMenuPress = () => {
-    // Open side drawer/navigation
-    // navigation.openDrawer();
-    Alert.alert('Menu', 'Side navigation would open here');
+    // Open the drawer
+    navigation.openDrawer();
   };
 
   const handleNotificationPress = () => {
-    Alert.alert('Notifications', 'Show notifications');
-    // navigation.navigate('Notifications');
+    // Alert.alert('Notifications', 'Show notifications');
+    navigation.navigate('Notification');
   };
 
   const handleProfilePress = () => {
-    Alert.alert('Profile', 'User profile options');
-    // navigation.navigate('Profile');
+    // Alert.alert('Profile', 'User profile options');
+    navigation.navigate('UserProfile');
   };
 
   // Navigation functions for stats arrows
@@ -90,33 +89,32 @@ const DashboardScreen = ({ navigation }) => {
     );
   };
 
+  // Updated navigation handlers
   const handleCreateInvoice = () => {
-    Alert.alert('Create Invoice', 'Navigate to Create Invoice screen');
-    // navigation.navigate('CreateInvoice');
+    navigation.navigate('CreateInvoice');
   };
 
   const handleAddItem = () => {
-    Alert.alert('Add Item', 'Navigate to Add Item screen');
-    // navigation.navigate('AddItem');
+    navigation.navigate('AddItemDetails');
   };
 
   const handleAddOrder = () => {
-    Alert.alert('Add Order', 'Navigate to Add Order screen');
-    // navigation.navigate('AddOrder');
+    navigation.navigate('CreateOrders');
   };
 
   const handleViewPendingOrders = () => {
-    Alert.alert('Pending Orders', 'Navigate to Pending Orders screen');
-    // navigation.navigate('PendingOrders');
+    navigation.navigate('PendingOrdersDetails');
   };
 
   const handleUnfulfilledOrders = () => {
     Alert.alert('Unfulfilled Orders', 'Navigate to Unfulfilled Orders');
+    // You can add navigation here if you have this screen
     // navigation.navigate('UnfulfilledOrders');
   };
 
   const handleReceivedOrders = () => {
     Alert.alert('Received Orders', 'Navigate to Received Orders');
+    // You can add navigation here if you have this screen
     // navigation.navigate('ReceivedOrders');
   };
 
@@ -435,6 +433,7 @@ const styles = StyleSheet.create({
     // borderRadius: 12,
     minHeight: 60,
     // marginBottom: 20,
+    marginTop: 25,
   },
 });
 

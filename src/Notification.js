@@ -9,6 +9,8 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
 
 const notifications = new Array(6).fill({
   type: 'Notification Type',
@@ -17,17 +19,21 @@ const notifications = new Array(6).fill({
   date: '17 March 2025 at 8.30 PM',
 });
 
-const NotificationScreen = () => {
+
+
+const NotificationScreen = ({ navigation }) => {
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#2d6a6a" barStyle="light-content" />
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
         <View style={styles.headerRight}>
@@ -39,6 +45,7 @@ const NotificationScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+
 
       {/* Notification List */}
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -72,8 +79,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  menuIcon: { width: 24, height: 24, justifyContent: 'space-between', paddingVertical: 3 },
-  menuLine: { height: 2, backgroundColor: 'white', borderRadius: 1 },
+  menuButton: { padding: 4 },
   headerTitle: {
     color: 'white',
     fontSize: 18,

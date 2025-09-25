@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const SuppliersBankDetailsScreen = () => {
+const SuppliersBankDetailsScreen = ({ navigation }) => {
   const [form, setForm] = useState({
     supplierId: '',
     name: '',
@@ -22,10 +22,7 @@ const SuppliersBankDetailsScreen = () => {
   });
 
   const updateField = (field, value) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleCancel = () => {
@@ -48,17 +45,28 @@ const SuppliersBankDetailsScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
+        <TouchableOpacity
+          style={styles.menuIcon}
+          onPress={() => navigation.openDrawer()}
+        >
           <View style={styles.menuLine} />
           <View style={styles.menuLine} />
           <View style={styles.menuLine} />
         </TouchableOpacity>
+
         <Text style={styles.headerTitle}>Suppliers Bank Details</Text>
+
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.notificationIcon}>
+          <TouchableOpacity
+            style={styles.notificationIcon}
+            onPress={() => navigation.navigate('Notifications')}
+          >
             <Text style={styles.iconText}>🔔</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.profileIcon}>
+          <TouchableOpacity
+            style={styles.profileIcon}
+            onPress={() => navigation.navigate('UserProfile')}
+          >
             <Text style={styles.iconText}>SS</Text>
           </TouchableOpacity>
         </View>
@@ -66,7 +74,6 @@ const SuppliersBankDetailsScreen = () => {
 
       {/* Form */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Supplier ID */}
         <View style={styles.inputRow}>
           <Text style={styles.rowLabel}>Supplier ID</Text>
           <TextInput
@@ -78,7 +85,6 @@ const SuppliersBankDetailsScreen = () => {
           />
         </View>
 
-        {/* Name */}
         <View style={styles.inputRow}>
           <Text style={styles.rowLabel}>Name</Text>
           <TextInput
@@ -90,7 +96,6 @@ const SuppliersBankDetailsScreen = () => {
           />
         </View>
 
-        {/* Account Number */}
         <View style={styles.inputRow}>
           <Text style={styles.rowLabel}>Account No.</Text>
           <TextInput
@@ -103,7 +108,6 @@ const SuppliersBankDetailsScreen = () => {
           />
         </View>
 
-        {/* Bank Name */}
         <View style={styles.inputRow}>
           <Text style={styles.rowLabel}>Bank Name</Text>
           <View style={styles.pickerWrapper}>
@@ -119,7 +123,6 @@ const SuppliersBankDetailsScreen = () => {
           </View>
         </View>
 
-        {/* Branch */}
         <View style={styles.inputRow}>
           <Text style={styles.rowLabel}>Branch</Text>
           <View style={styles.pickerWrapper}>
@@ -135,7 +138,6 @@ const SuppliersBankDetailsScreen = () => {
           </View>
         </View>
 
-        {/* Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -146,7 +148,6 @@ const SuppliersBankDetailsScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom Bar */}
       <View style={styles.bottomCard}></View>
     </SafeAreaView>
   );
@@ -162,7 +163,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  menuIcon: { width: 24, height: 24, justifyContent: 'space-between', paddingVertical: 3 },
+  menuIcon: {
+    width: 24,
+    height: 24,
+    justifyContent: 'space-between',
+    paddingVertical: 3,
+  },
   menuLine: { height: 2, backgroundColor: 'white', borderRadius: 1 },
   headerTitle: {
     color: 'white',
@@ -191,10 +197,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconText: { color: 'white', fontSize: 14 },
-
   content: { flex: 1, padding: 16 },
   inputRow: { marginBottom: 16 },
-  rowLabel: { fontSize: 14, fontWeight: '500', color: '#2d6a6a', marginBottom: 6 },
+  rowLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2d6a6a',
+    marginBottom: 6,
+  },
   rowInput: {
     backgroundColor: 'white',
     borderWidth: 1,

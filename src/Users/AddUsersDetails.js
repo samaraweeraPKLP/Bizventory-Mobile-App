@@ -11,8 +11,10 @@ import {
   Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 
-const AddUserDetailsScreen = () => {
+
+const AddUserDetailsScreen = ({ navigation }) => {
   const [userData, setUserData] = useState({
     userId: '',
     username: '',
@@ -35,16 +37,18 @@ const AddUserDetailsScreen = () => {
     console.log('Save pressed', userData);
   };
 
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#0a3c4c" barStyle="light-content" />
+      <StatusBar backgroundColor="#2d6a6a" barStyle="light-content" />
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Add User Details</Text>
         <View style={styles.headerRight}>
@@ -132,24 +136,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#eaf0f6',
   },
   header: {
-    backgroundColor: '#0a3c4c',
+    backgroundColor: '#2d6a6a',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  menuIcon: {
-    width: 24,
-    height: 24,
-    justifyContent: 'space-between',
-    paddingVertical: 3,
-  },
-  menuLine: {
-    height: 2,
-    backgroundColor: 'white',
-    borderRadius: 1,
-  },
+  menuButton: { padding: 4 },
   headerTitle: {
     color: 'white',
     fontSize: 18,
@@ -211,7 +205,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#0a3c4c',
+    color: '#2d6a6a',
     width: 100,
     marginRight: 16,
   },
@@ -219,7 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#0a3c4c',
+    borderColor: '#2d6a6a',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 12,
@@ -229,7 +223,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#0a3c4c',
+    borderColor: '#2d6a6a',
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -247,19 +241,19 @@ const styles = StyleSheet.create({
     flex: 0.48,
     backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#0a3c4c',
+    borderColor: '#2d6a6a',
     paddingVertical: 12,
     borderRadius: 6,
     alignItems: 'center',
   },
   cancelButtonText: {
-    color: '#0a3c4c',
+    color: '#2d6a6a',
     fontWeight: '600',
     fontSize: 14,
   },
   saveButton: {
     flex: 0.48,
-    backgroundColor: '#0a3c4c',
+    backgroundColor: '#2d6a6a',
     paddingVertical: 12,
     borderRadius: 6,
     alignItems: 'center',

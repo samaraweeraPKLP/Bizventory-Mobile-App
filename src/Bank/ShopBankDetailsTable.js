@@ -10,8 +10,9 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // ✅ import Ionicons for icons
 
-const ShopBankDetailsScreen = () => {
+const ShopBankDetailsScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedCard, setSelectedCard] = useState(null);
 
@@ -38,24 +39,36 @@ const ShopBankDetailsScreen = () => {
     setSelectedCard(null);
   };
 
+  const handleMenuPress = () => {
+    navigation.openDrawer(); // ✅ open drawer
+  };
+
+  const handleNotificationPress = () => {
+    navigation.navigate('Notification'); // 🔁 Replace with actual screen name
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate('UserProfile'); // 🔁 Replace with actual screen name
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#2d6a6a" barStyle="light-content" />
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.iconButton}>
+          <Ionicons name="menu" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Shop Bank details</Text>
+
+        <Text style={styles.headerTitle}>Shop Bank Details</Text>
+
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.notificationIcon}>
-            <Text style={styles.iconText}>🔔</Text>
+          <TouchableOpacity onPress={handleNotificationPress} style={styles.iconButton}>
+            <Ionicons name="notifications-outline" size={22} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.profileIcon}>
-            <Text style={styles.iconText}>SS</Text>
+          <TouchableOpacity onPress={handleProfilePress} style={styles.iconButton}>
+            <Ionicons name="person-circle-outline" size={26} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -118,8 +131,7 @@ const ShopBankDetailsScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom card */}
-      <View style={styles.bottomCard}></View>
+      <View style={styles.bottomCard} />
     </SafeAreaView>
   );
 };
@@ -132,37 +144,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    paddingBottom: 12,
   },
-  menuIcon: { width: 24, height: 24, justifyContent: 'space-between', paddingVertical: 3 },
-  menuLine: { height: 2, backgroundColor: 'white', borderRadius: 1 },
+  iconButton: {
+    paddingHorizontal: 6,
+    paddingVertical: 6,
+  },
   headerTitle: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
-    flex: 1,
-    textAlign: 'center',
-    marginHorizontal: 16,
   },
-  headerRight: { flexDirection: 'row', alignItems: 'center' },
-  notificationIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+  headerRight: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 8,
   },
-  profileIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: { color: 'white', fontSize: 14 },
   searchContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,

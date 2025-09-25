@@ -10,10 +10,15 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const SupplierDetailsScreen = () => {
+const SupplierDetailsScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedSupplier, setSelectedSupplier] = useState(null);
+  
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
 
   const suppliers = new Array(15).fill({
     supplierID: 'SUP001',
@@ -44,7 +49,18 @@ const SupplierDetailsScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Supplier Details</Text>
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.notificationIcon}>
+            <Text style={styles.iconText}>🔔</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.profileIcon}>
+            <Text style={styles.iconText}>👤</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Search Bar */}
@@ -112,14 +128,48 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
     backgroundColor: '#2d6a6a',
-    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
+  menuButton: { padding: 4 },
   headerTitle: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
+    flex: 1,
+    textAlign: 'center',
+    marginHorizontal: 16,
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  notificationIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  profileIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  content: { flex: 1, padding: 16 },
+
   searchContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,

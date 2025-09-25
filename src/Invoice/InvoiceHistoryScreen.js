@@ -10,9 +10,14 @@ import {
   StatusBar,
   Platform
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const InvoiceHistoryScreen = () => {
+
+const InvoiceHistoryScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
 
   // Sample invoice data
   const invoices = [
@@ -30,10 +35,8 @@ const InvoiceHistoryScreen = () => {
       
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Invoice History</Text>
         <View style={styles.headerRight}>

@@ -14,58 +14,56 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const handleLogin = async () => {
-    // Reset errors
-    setUsernameError('');
-    setPasswordError('');
+const handleLogin = async () => {
+  setUsernameError('');
+  setPasswordError('');
 
-    // Validation
-    let hasError = false;
-    
-    if (!username) {
-      setUsernameError('Username is required');
-      hasError = true;
+  if (!username) {
+    setUsernameError('Username is required');
+    return;
+  }
+  if (!password) {
+    setPasswordError('Password is required');
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const response = await fetch("http://10.251.35.12:5260/api/Auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+
+    if (response.ok) {
+      const data = await response.json();
+      Alert.alert("Success", data.message);
+      navigation.replace("Main");
+    } else {
+      const errorData = await response.json();
+      Alert.alert("Error", errorData.message || "Login failed");
     }
+  } catch (error) {
+    Alert.alert("Error", "Could not connect to server");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    if (!password) {
-      setPasswordError('Password is required');
-      hasError = true;
-    }
 
-    if (hasError) return;
+const handleResetPassword = () => {
+  navigation.navigate('ForgotPassword'); 
+};
 
-    setIsLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Here you would typically make an API call to authenticate
-      // Example: const response = await authService.login(username, password);
-      
-      Alert.alert('Success', 'Login successful!');
-      
-      // Navigate to dashboard or main app
-      // navigation.navigate('Dashboard');
-      
-    } catch (error) {
-      Alert.alert('Error', 'Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleResetPassword = () => {
-    Alert.alert('Reset Password', 'Password reset functionality would be implemented here');
-    // navigation.navigate('ResetPassword');
-  };
 
   return (
     <SafeAreaView style={styles.container}>

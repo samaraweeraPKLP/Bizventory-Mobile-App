@@ -8,11 +8,13 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 
-const ShopBankDetailsScreen = () => {
+const ShopBankDetailsScreen = ({ navigation }) => {
   const [bankDetails, setBankDetails] = useState({
     invoiceNo: '',
     cardType: '',
@@ -32,6 +34,7 @@ const ShopBankDetailsScreen = () => {
 
   const handleSave = () => {
     console.log('Saved details:', bankDetails);
+    Alert.alert('Success', 'Bank details saved successfully!');
   };
 
   const handleCancel = () => {
@@ -46,24 +49,37 @@ const ShopBankDetailsScreen = () => {
     });
   };
 
+  // Navigation handlers
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
+
+  const handleNotificationPress = () => {
+    navigation.navigate('Notification');
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate('UserProfile');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#2d6a6a" barStyle="light-content" />
 
-      {/* Header */}
+      {/* Header with Drawer Navigation */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
+        
         <Text style={styles.headerTitle}>Shop Bank Details</Text>
+        
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.notificationIcon}>
-            <Text style={styles.iconText}>🔔</Text>
+          <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationButton}>
+            <Ionicons name="notifications-outline" size={22} color="#FFFFFF" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.profileIcon}>
-            <Text style={styles.iconText}>👤</Text>
+          <TouchableOpacity onPress={handleProfilePress} style={styles.profileButton}>
+            <Ionicons name="person-circle-outline" size={26} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>
@@ -76,6 +92,7 @@ const ShopBankDetailsScreen = () => {
             <Picker
               selectedValue={bankDetails.invoiceNo}
               onValueChange={(value) => updateField('invoiceNo', value)}
+              style={styles.picker}
             >
               <Picker.Item label="Select Invoice" value="" />
               <Picker.Item label="INV-1001" value="INV-1001" />
@@ -92,6 +109,7 @@ const ShopBankDetailsScreen = () => {
             <Picker
               selectedValue={bankDetails.cardType}
               onValueChange={(value) => updateField('cardType', value)}
+              style={styles.picker}
             >
               <Picker.Item label="Select Card Type" value="" />
               <Picker.Item label="Visa" value="Visa" />
@@ -160,6 +178,7 @@ const ShopBankDetailsScreen = () => {
             placeholder="Vcc"
             placeholderTextColor="#999"
             keyboardType="numeric"
+            secureTextEntry={true}
             value={bankDetails.vcc}
             onChangeText={(value) => updateField('vcc', value)}
           />
@@ -183,7 +202,10 @@ const ShopBankDetailsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#f5f5f5' 
+  },
   header: {
     backgroundColor: '#2d6a6a',
     flexDirection: 'row',
@@ -191,63 +213,166 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-
+    paddingTop: 35,
   },
-  menuIcon: { width: 24, height: 24, justifyContent: 'space-between', paddingVertical: 3 },
-  menuLine: { height: 2, backgroundColor: 'white', borderRadius: 1 },
-  headerTitle: { color: 'white', fontSize: 18, fontWeight: '600', flex: 1, textAlign: 'center', marginHorizontal: 16 },
-  headerRight: { flexDirection: 'row', alignItems: 'center' },
-  notificationIcon: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center', justifyContent: 'center', marginRight: 8
+  menuButton: {
+    padding: 4,
   },
-  profileIcon: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center', justifyContent: 'center',
+  headerTitle: { 
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
-  iconText: { color: 'white', fontSize: 14 },
-  content: { flex: 1, padding: 16 },
-  inputRow: { marginBottom: 16 },
-  rowLabel: { fontSize: 14, fontWeight: '500', color: '#2d6a6a', marginBottom: 6 },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  notificationButton: {
+    padding: 4,
+    marginRight: 8,
+  },
+  profileButton: {
+    padding: 4,
+  },
+  content: { 
+    flex: 1, 
+    padding: 16 
+  },
+  inputRow: { 
+    marginBottom: 16 
+  },
+  rowLabel: { 
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2d6a6a',
+    marginBottom: 8
+  },
   rowInput: {
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#2d6a6a',
     borderRadius: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 15,
     paddingVertical: 12,
-    fontSize: 14,
+    fontSize: 16,
     color: '#333',
     ...Platform.select({
-      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
-      android: { elevation: 1 },
+      ios: { 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.1, 
+        shadowRadius: 4 
+      },
+      android: { elevation: 2 },
     }),
   },
-  row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
-  halfWidth: { flex: 0.48 },
-  label: { fontSize: 14, fontWeight: '500', color: '#2d6a6a', marginBottom: 6 },
+  pickerWrapper: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#2d6a6a',
+    borderRadius: 8,
+    ...Platform.select({
+      ios: { 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.1, 
+        shadowRadius: 4 
+      },
+      android: { elevation: 2 },
+    }),
+  },
+  picker: {
+    height: 50,
+    color: '#333',
+  },
+  row: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginBottom: 16 
+  },
+  halfWidth: { 
+    flex: 0.48 
+  },
+  label: { 
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2d6a6a',
+    marginBottom: 8
+  },
   input: {
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#2d6a6a',
     borderRadius: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 15,
     paddingVertical: 12,
-    fontSize: 14,
+    fontSize: 16,
     color: '#333',
+    ...Platform.select({
+      ios: { 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.1, 
+        shadowRadius: 4 
+      },
+      android: { elevation: 2 },
+    }),
   },
-  buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 25 },
+  buttonRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginTop: 30, 
+    marginBottom: 25 
+  },
   cancelButton: {
-    flex: 0.48, backgroundColor: 'white', borderWidth: 1, borderColor: '#2d6a6a',
-    paddingVertical: 10, borderRadius: 6, alignItems: 'center'
+    flex: 0.48, 
+    backgroundColor: 'white', 
+    borderWidth: 2, 
+    borderColor: '#2d6a6a',
+    paddingVertical: 15, 
+    borderRadius: 8, 
+    alignItems: 'center',
+    ...Platform.select({
+      ios: { 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.1, 
+        shadowRadius: 4 
+      },
+      android: { elevation: 2 },
+    }),
   },
-  cancelButtonText: { color: '#2d6a6a', fontWeight: '600', fontSize: 14 },
+  cancelButtonText: { 
+    color: '#2d6a6a', 
+    fontWeight: '600', 
+    fontSize: 16 
+  },
   saveButton: {
-    flex: 0.48, backgroundColor: '#2d6a6a',
-    paddingVertical: 10, borderRadius: 6, alignItems: 'center'
+    flex: 0.48, 
+    backgroundColor: '#2d6a6a',
+    paddingVertical: 15, 
+    borderRadius: 8, 
+    alignItems: 'center',
+    ...Platform.select({
+      ios: { 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.1, 
+        shadowRadius: 4 
+      },
+      android: { elevation: 2 },
+    }),
   },
-  saveButtonText: { color: 'white', fontWeight: '600', fontSize: 14 },
-  bottomCard: { backgroundColor: '#1B4F56', minHeight: 60, width: '100%' },
+  saveButtonText: { 
+    color: 'white', 
+    fontWeight: '600', 
+    fontSize: 16 
+  },
+  bottomCard: { 
+    backgroundColor: '#2d6a6a', 
+    minHeight: 60, 
+    width: '100%' 
+  },
 });
 
 export default ShopBankDetailsScreen;

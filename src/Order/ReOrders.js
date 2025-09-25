@@ -10,8 +10,9 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 
-const ReOrdersScreen = () => {
+const ReOrdersScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({
     supplierId: "",
     supplierName: "",
@@ -46,6 +47,9 @@ const ReOrdersScreen = () => {
   const handleSave = () => {
     console.log("Save pressed", formData);
   };
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,10 +57,8 @@ const ReOrdersScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Re-Orders</Text>
         <View style={styles.headerRight}>
@@ -146,8 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  menuIcon: { width: 24, height: 24, justifyContent: "space-between", paddingVertical: 3 },
-  menuLine: { height: 2, backgroundColor: "white", borderRadius: 1 },
+  menuButton: { padding: 4 },
   headerTitle: {
     color: "white", fontSize: 18, fontWeight: "600",
     flex: 1, textAlign: "center", marginHorizontal: 16,

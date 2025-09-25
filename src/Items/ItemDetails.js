@@ -10,8 +10,9 @@ import {
   StatusBar,
   Platform
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const ItemDetailsScreen = () => {
+const ItemDetailsScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedItem, setSelectedItem] = useState(null); // track selected gear icon
 
@@ -35,9 +36,14 @@ const ItemDetailsScreen = () => {
     setSelectedItem(null);
   };
 
-  const handleUpdate = (id) => {
-    console.log(`Update Supplier for ${id}`);
-    setSelectedItem(null);
+  const handleUpdate = (item) => {
+  setSelectedItem(null);
+  navigation.navigate('AddItemDetailsScreen', { item }); 
+  };
+
+
+  const handleMenuPress = () => {
+    navigation.openDrawer();
   };
 
   return (
@@ -46,10 +52,8 @@ const ItemDetailsScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuIcon}>
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
-          <View style={styles.menuLine} />
+        <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Item Details</Text>
         <View style={styles.headerRight}>
@@ -112,11 +116,12 @@ const ItemDetailsScreen = () => {
                   {selectedItem === item.id && (
                     <View style={styles.dropdownMenu}>
                       <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.menuItem}>
-                        <Text style={styles.menuText}>Delete Supplier</Text>
+                        <Text style={styles.menuText}>Delete Item</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => handleUpdate(item.id)} style={styles.menuItem}>
-                        <Text style={styles.menuText}>Update Supplier</Text>
+                      <TouchableOpacity onPress={() => handleUpdate(item)} style={styles.menuItem}>
+                        <Text style={styles.menuText}>Update Item</Text>
                       </TouchableOpacity>
+
                     </View>
                   )}
                 </View>
@@ -142,8 +147,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  menuIcon: { width: 24, height: 24, justifyContent: 'space-between', paddingVertical: 3 },
-  menuLine: { height: 2, backgroundColor: 'white', borderRadius: 1 },
+  menuButton: { padding: 4 },
   headerTitle: { color: 'white', fontSize: 18, fontWeight: '600', flex: 1, textAlign: 'center', marginHorizontal: 16 },
   headerRight: { flexDirection: 'row', alignItems: 'center' },
   notificationIcon: {
